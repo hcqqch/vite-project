@@ -12,10 +12,11 @@
 import hamburger from './Hamburger.vue'
 import { useBasicStore } from '@/store/basic'
 const basicStore = useBasicStore()
-const { sidebar } = basicStore
+const { sidebar,setToggleSideBar } = basicStore
+console.log(sidebar)
 
 const toggleSideBar = () => {
-  // setToggleSideBar()
+  setToggleSideBar()
 }
 </script>
 

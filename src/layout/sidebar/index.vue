@@ -1,44 +1,54 @@
 <template>
-  <div class="left-side-content">
+  <div class="left-side-content" :style="{width:sidebar.opened?'210px':'60px'}">
     <el-row class="tac">
       <el-col :span="24">
         <!-- <h5 class="mb-2">Custom colors</h5> -->
-        <el-menu
-          active-text-color="#ffd04b"
-          background-color="#545c64"
-          class="el-menu-vertical-demo"
-          default-active="2"
-          text-color="#fff"
-          @open="handleOpen"
-          @close="handleClose"
-        >
-          <sidebar-item v-for="route in allRoutes" :key="route.path" :item="route" :base-path="route.path" />
-        </el-menu>
+        <el-scrollbar>
+          <el-menu
+            class="el-menu-vertical"
+            :collapse="!sidebar.opened"
+            :default-active="activeMenu"
+            :collapse-transition="false"
+            mode="vertical"
+          >
+            <sidebar-item
+              v-for="route in allRoutes"
+              :key="route.path"
+              :item="route"
+              :base-path="route.path"
+            />
+          </el-menu>
+        </el-scrollbar>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup lang="ts">
-// import {
-//   Document,
-//   Menu as IconMenu,
-//   Location,
-//   Setting,
-// } from '@element-plus/icons-vue'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia/dist/pinia'
+import SidebarItem from "./SidebarItem.vue";
+import { constantRoutes } from "@/router";
+import { useRoute } from 'vue-router'
+import { useBasicStore } from '@/store/basic'
 
-import SidebarItem from './SidebarItem.vue'
-import { constantRoutes } from '@/router'
-const allRoutes = constantRoutes
-console.log(allRoutes)
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
+const { sidebar } = storeToRefs(useBasicStore())
+const allRoutes = constantRoutes;
+console.log(allRoutes);
+const routeInstance = useRoute()
+const activeMenu = computed(() => {
+  const { meta, path } = routeInstance
+  // if set path, the sidebar will highlight the path you set
+  if (meta.activeMenu) {
+    return meta.activeMenu
+  }
+  return path
+})
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.el-menu-vertical {
+  width: 210px;
+}
 .left-side-content {
   width: 210px;
   position: fixed;
